@@ -2,11 +2,11 @@ HEADERS = moopaned.h moopane.h moobigpaned.h marshals.h stock-moo.h moopython-ut
 OBJECTS = moopaned.o moopane.o moobigpaned.o test.o marshals.o
 PICS = close.png sticky.png hide.png detach.png attach.png keepontop.png
 
-CFLAGS = `pkg-config --cflags gtk+-2.0` -W -Wall -DMooPane=_PidaMooPane \
+CFLAGS = `pkg-config --cflags gtk+-3.0` -W -Wall -DMooPane=_PidaMooPane \
 -DMooPaneClass=_PidaMooPaneClass -DMooPaned=_PidaMooPaned -DMooPanedClass=_PidaMooPanedClass \
 -DMooBigPaned=_PidaMooBigPaned -DMooBigPanedClass=_PidaMooBigPanedClass
-LIBS = `pkg-config --libs gtk+-2.0`
-PYGTK_DEFS_DIR=`pkg-config --variable=defsdir pygtk-2.0`
+LIBS = `pkg-config --libs gtk+-3.0`
+PYGTK_DEFS_DIR=`pkg-config --variable=defsdir glib-2.0`
 
 test: $(OBJECTS)
 	gcc $(LIBS) $(OBJECTS) -o test

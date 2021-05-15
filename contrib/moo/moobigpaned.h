@@ -13,8 +13,8 @@
  *   License along with medit.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MOO_BIG_PANED_H
-#define MOO_BIG_PANED_H
+#ifndef MOO_INTERNAL_BIG_PANED_H
+#define MOO_INTERNAL_BIG_PANED_H
 
 #include <gtk/gtkframe.h>
 #include "moopaned.h"
@@ -22,26 +22,26 @@
 G_BEGIN_DECLS
 
 
-#define MOO_TYPE_BIG_PANED              (moo_big_paned_get_type ())
-#define MOO_BIG_PANED(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), MOO_TYPE_BIG_PANED, MooBigPaned))
-#define MOO_BIG_PANED_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), MOO_TYPE_BIG_PANED, MooBigPanedClass))
-#define MOO_IS_BIG_PANED(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), MOO_TYPE_BIG_PANED))
-#define MOO_IS_BIG_PANED_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), MOO_TYPE_BIG_PANED))
-#define MOO_BIG_PANED_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), MOO_TYPE_BIG_PANED, MooBigPanedClass))
+#define MOO_TYPE_INTERNAL_BIG_PANED              (moo_big_paned_get_type ())
+#define MOO_INTERNAL_BIG_PANED(object)           (G_TYPE_CHECK_INSTANCE_CAST ((object), MOO_TYPE_INTERNAL_BIG_PANED, MooInternalBigPaned))
+#define MOO_INTERNAL_BIG_PANED_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), MOO_TYPE_INTERNAL_BIG_PANED, MooInternalBigPanedClass))
+#define MOO_IS_BIG_PANED(object)        (G_TYPE_CHECK_INSTANCE_TYPE ((object), MOO_TYPE_INTERNAL_BIG_PANED))
+#define MOO_IS_BIG_PANED_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), MOO_TYPE_INTERNAL_BIG_PANED))
+#define MOO_INTERNAL_BIG_PANED_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), MOO_TYPE_INTERNAL_BIG_PANED, MooInternalBigPanedClass))
 
 
-typedef struct MooBigPaned        MooBigPaned;
-typedef struct MooBigPanedPrivate MooBigPanedPrivate;
-typedef struct MooBigPanedClass   MooBigPanedClass;
+typedef struct MooInternalBigPaned        MooInternalBigPaned;
+typedef struct MooInternalBigPanedPrivate MooInternalBigPanedPrivate;
+typedef struct MooInternalBigPanedClass   MooInternalBigPanedClass;
 
-struct MooBigPaned
+struct MooInternalBigPaned
 {
     GtkFrame base;
-    MooBigPanedPrivate *priv;
+    MooInternalBigPanedPrivate *priv;
     GtkWidget *paned[4]; /* indexed by PanePos */
 };
 
-struct MooBigPanedClass
+struct MooInternalBigPanedClass
 {
     GtkFrameClass base_class;
 };
@@ -51,55 +51,55 @@ GType           moo_big_paned_get_type          (void) G_GNUC_CONST;
 
 GtkWidget      *moo_big_paned_new               (void);
 
-void            moo_big_paned_set_pane_order    (MooBigPaned    *paned,
+void            moo_big_paned_set_pane_order    (MooInternalBigPaned    *paned,
                                                  int            *order);
-void            moo_big_paned_set_config        (MooBigPaned    *paned,
+void            moo_big_paned_set_config        (MooInternalBigPaned    *paned,
                                                  const char     *config_string);
-char           *moo_big_paned_get_config        (MooBigPaned    *paned);
+char           *moo_big_paned_get_config        (MooInternalBigPaned    *paned);
 
-MooPane        *moo_big_paned_find_pane         (MooBigPaned    *paned,
+MooInternalPane        *moo_big_paned_find_pane         (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget,
-                                                 MooPaned      **child_paned);
+                                                 MooInternalPaned      **child_paned);
 
-void            moo_big_paned_add_child         (MooBigPaned    *paned,
+void            moo_big_paned_add_child         (MooInternalBigPaned    *paned,
                                                  GtkWidget      *widget);
-void            moo_big_paned_remove_child      (MooBigPaned    *paned);
-GtkWidget      *moo_big_paned_get_child         (MooBigPaned    *paned);
+void            moo_big_paned_remove_child      (MooInternalBigPaned    *paned);
+GtkWidget      *moo_big_paned_get_child         (MooInternalBigPaned    *paned);
 
-MooPane        *moo_big_paned_insert_pane       (MooBigPaned    *paned,
+MooInternalPane        *moo_big_paned_insert_pane       (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget,
                                                  const char     *pane_id,
-                                                 MooPaneLabel   *pane_label,
-                                                 MooPanePosition position,
+                                                 MooInternalPaneLabel   *pane_label,
+                                                 MooInternalPanePosition position,
                                                  int             index_);
-gboolean        moo_big_paned_remove_pane       (MooBigPaned    *paned,
+gboolean        moo_big_paned_remove_pane       (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget);
-MooPane        *moo_big_paned_lookup_pane       (MooBigPaned    *paned,
+MooInternalPane        *moo_big_paned_lookup_pane       (MooInternalBigPaned    *paned,
                                                  const char     *pane_id);
 
-GtkWidget      *moo_big_paned_get_pane          (MooBigPaned    *paned,
-                                                 MooPanePosition position,
+GtkWidget      *moo_big_paned_get_pane          (MooInternalBigPaned    *paned,
+                                                 MooInternalPanePosition position,
                                                  int             index_);
-void            moo_big_paned_reorder_pane      (MooBigPaned    *paned,
+void            moo_big_paned_reorder_pane      (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget,
-                                                 MooPanePosition new_position,
+                                                 MooInternalPanePosition new_position,
                                                  int             new_index);
 
-MooPaned       *moo_big_paned_get_paned         (MooBigPaned    *paned,
-                                                 MooPanePosition position);
+MooInternalPaned       *moo_big_paned_get_paned         (MooInternalBigPaned    *paned,
+                                                 MooInternalPanePosition position);
 
-void            moo_big_paned_open_pane         (MooBigPaned    *paned,
+void            moo_big_paned_open_pane         (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget);
-void            moo_big_paned_hide_pane         (MooBigPaned    *paned,
+void            moo_big_paned_hide_pane         (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget);
-void            moo_big_paned_present_pane      (MooBigPaned    *paned,
+void            moo_big_paned_present_pane      (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget);
-void            moo_big_paned_attach_pane       (MooBigPaned    *paned,
+void            moo_big_paned_attach_pane       (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget);
-void            moo_big_paned_detach_pane       (MooBigPaned    *paned,
+void            moo_big_paned_detach_pane       (MooInternalBigPaned    *paned,
                                                  GtkWidget      *pane_widget);
 
 
 G_END_DECLS
 
-#endif /* MOO_BIG_PANED_H */
+#endif /* MOO_INTERNAL_BIG_PANED_H */

@@ -20,16 +20,16 @@ _wrap_moo_big_paned_find_pane (PyGObject *self, PyObject *args, PyObject *kwargs
 {
     static char *kwlist[] = { "pane_widget", NULL };
     PyGObject *widget;
-    MooPaned *child;
+    MooInternalPaned *child;
     PyObject *ret;
-    MooPane *pane;
+    MooInternalPane *pane;
 
     if (!PyArg_ParseTupleAndKeywords (args, kwargs,
-                                      "O!:MooBigPaned.find_pane", kwlist,
+                                      "O!:MooInternalBigPaned.find_pane", kwlist,
                                       &PyGtkWidget_Type, &widget))
         return NULL;
 
-    pane = moo_big_paned_find_pane (MOO_BIG_PANED (self->obj), GTK_WIDGET (widget->obj), &child);
+    pane = moo_big_paned_find_pane (MOO_INTERNAL_BIG_PANED (self->obj), GTK_WIDGET (widget->obj), &child);
 
     if (!pane)
     {

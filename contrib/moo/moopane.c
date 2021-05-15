@@ -92,15 +92,15 @@ _moo_window_set_icon_from_stock (GtkWindow  *window,
 #endif
 
 
-struct MooPane {
+struct MooInternalPane {
     GtkObject base;
 
     char         *id;
-    MooPaned     *parent;
+    MooInternalPaned     *parent;
     GtkWidget    *child;
 
     GtkWidget    *child_holder;
-    MooPaneLabel *label;
+    MooInternalPaneLabel *label;
     GtkWidget    *frame;
     GtkWidget    *handle;
     GtkWidget    *small_handle;
@@ -123,7 +123,7 @@ struct MooPane {
     GtkWidget    *keep_on_top_button;
     GtkWidget    *window_child_holder;
 
-    MooPaneParams *params;
+    MooInternalPaneParams *params;
 
     guint         open_timeout;
     guint         button_highlight : 1;
@@ -135,12 +135,12 @@ struct MooPane {
     guint         params_changed_blocked : 1;
 };
 
-struct MooPaneClass {
+struct MooInternalPaneClass {
     GtkObjectClass base_class;
-    gboolean (*remove) (MooPane *pane);
+    gboolean (*remove) (MooInternalPane *pane);
 };
 
-G_DEFINE_TYPE (MooPane, moo_pane, GTK_TYPE_OBJECT)
+G_DEFINE_TYPE (MooInternalPane, moo_pane, GTK_TYPE_OBJECT)
 
 enum {
     PROP_0,
@@ -160,7 +160,7 @@ static guint signals[NUM_SIGNALS];
 
 
 static void
-set_pane_window_icon_and_title (MooPane *pane)
+set_pane_window_icon_and_title (MooInternalPane *pane)
 {
     if (pane->window && pane->label)
     {
@@ -177,7 +177,7 @@ set_pane_window_icon_and_title (MooPane *pane)
 }
 
 static void
-update_label_widgets (MooPane *pane)
+update_label_widgets (MooInternalPane *pane)
 {
     if (pane->label && pane->label_widget)
     {
@@ -204,10 +204,10 @@ update_label_widgets (MooPane *pane)
 }
 
 void
-moo_pane_set_label (MooPane      *pane,
-                    MooPaneLabel *label)
+moo_pane_set_label (MooInternalPane      *pane,
+                    MooInternalPaneLabel *label)
 {
-    MooPaneLabel *tmp;
+    MooInternalPaneLabel *tmp;
 
     g_return_if_fail (MOO_IS_PANE (pane));
     g_return_if_fail (label != NULL);
@@ -222,15 +222,15 @@ moo_pane_set_label (MooPane      *pane,
 }
 
 
-MooPaneParams *
-moo_pane_get_params (MooPane *pane)
+MooInternalPaneParams *
+moo_pane_get_params (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return moo_pane_params_copy (pane->params);
 }
 
-MooPaneLabel *
-moo_pane_get_label (MooPane *pane)
+MooInternalPaneLabel *
+moo_pane_get_label (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return moo_pane_label_copy (pane->label);
@@ -238,10 +238,10 @@ moo_pane_get_label (MooPane *pane)
 
 
 void
-moo_pane_set_params (MooPane       *pane,
-                     MooPaneParams *params)
+moo_pane_set_params (MooInternalPane       *pane,
+                     MooInternalPaneParams *params)
 {
-    MooPaneParams *old_params;
+    MooInternalPaneParams *old_params;
 
     g_return_if_fail (MOO_IS_PANE (pane));
     g_return_if_fail (params != NULL);
@@ -266,7 +266,7 @@ moo_pane_set_params (MooPane       *pane,
 
 
 void
-moo_pane_set_detachable (MooPane  *pane,
+moo_pane_set_detachable (MooInternalPane  *pane,
                          gboolean  detachable)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
@@ -287,7 +287,7 @@ moo_pane_set_detachable (MooPane  *pane,
 
 
 void
-moo_pane_set_removable (MooPane  *pane,
+moo_pane_set_removable (MooInternalPane  *pane,
                         gboolean  removable)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
@@ -305,14 +305,14 @@ moo_pane_set_removable (MooPane  *pane,
 
 
 gboolean
-moo_pane_get_detachable (MooPane *pane)
+moo_pane_get_detachable (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), FALSE);
     return pane->detachable;
 }
 
 gboolean
-moo_pane_get_removable (MooPane *pane)
+moo_pane_get_removable (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), FALSE);
     return pane->removable;
@@ -325,7 +325,7 @@ moo_pane_set_property (GObject      *object,
                        const GValue *value,
                        GParamSpec   *pspec)
 {
-    MooPane *pane = MOO_PANE (object);
+    MooInternalPane *pane = MOO_INTERNAL_PANE (object);
 
     switch (prop_id)
     {
@@ -352,7 +352,7 @@ moo_pane_get_property (GObject    *object,
                        GValue     *value,
                        GParamSpec *pspec)
 {
-    MooPane *pane = MOO_PANE (object);
+    MooInternalPane *pane = MOO_INTERNAL_PANE (object);
 
     switch (prop_id)
     {
@@ -378,7 +378,7 @@ moo_pane_get_property (GObject    *object,
 
 
 static void
-moo_pane_init (MooPane *pane)
+moo_pane_init (MooInternalPane *pane)
 {
     pane->detachable = TRUE;
     pane->removable = TRUE;
@@ -408,7 +408,7 @@ moo_pane_init (MooPane *pane)
 static void
 moo_pane_finalize (GObject *object)
 {
-    MooPane *pane = MOO_PANE (object);
+    MooInternalPane *pane = MOO_INTERNAL_PANE (object);
 
     g_free (pane->id);
     moo_pane_label_free (pane->label);
@@ -420,7 +420,7 @@ moo_pane_finalize (GObject *object)
 static void
 moo_pane_dispose (GObject *object)
 {
-    MooPane *pane = MOO_PANE (object);
+    MooInternalPane *pane = MOO_INTERNAL_PANE (object);
 
     if (pane->child)
     {
@@ -451,7 +451,7 @@ moo_pane_dispose (GObject *object)
 }
 
 static void
-moo_pane_class_init (MooPaneClass *klass)
+moo_pane_class_init (MooInternalPaneClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
@@ -466,11 +466,11 @@ moo_pane_class_init (MooPaneClass *klass)
 
     g_object_class_install_property (gobject_class, PROP_LABEL,
         g_param_spec_boxed ("label", "label", "label",
-                            MOO_TYPE_PANE_LABEL, G_PARAM_READWRITE));
+                            MOO_TYPE_INTERNAL_PANE_LABEL, G_PARAM_READWRITE));
 
     g_object_class_install_property (gobject_class, PROP_PARAMS,
         g_param_spec_boxed ("params", "params", "params",
-                            MOO_TYPE_PANE_PARAMS, G_PARAM_READWRITE));
+                            MOO_TYPE_INTERNAL_PANE_PARAMS, G_PARAM_READWRITE));
 
     g_object_class_install_property (gobject_class, PROP_DETACHABLE,
         g_param_spec_boolean ("detachable", "detachable", "detachable",
@@ -484,7 +484,7 @@ moo_pane_class_init (MooPaneClass *klass)
             g_signal_new ("remove",
                           G_OBJECT_CLASS_TYPE (klass),
                           G_SIGNAL_RUN_LAST,
-                          G_STRUCT_OFFSET (MooPaneClass, remove),
+                          G_STRUCT_OFFSET (MooInternalPaneClass, remove),
                           g_signal_accumulator_true_handled, NULL,
                           _moo_marshal_BOOL__VOID,
                           G_TYPE_BOOLEAN, 0);
@@ -492,7 +492,7 @@ moo_pane_class_init (MooPaneClass *klass)
 
 
 static void
-close_button_clicked (MooPane *pane)
+close_button_clicked (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     if (pane->parent)
@@ -500,7 +500,7 @@ close_button_clicked (MooPane *pane)
 }
 
 static void
-hide_button_clicked (MooPane *pane)
+hide_button_clicked (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     if (pane->parent)
@@ -508,7 +508,7 @@ hide_button_clicked (MooPane *pane)
 }
 
 static void
-attach_button_clicked (MooPane *pane)
+attach_button_clicked (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     if (pane->parent)
@@ -516,14 +516,14 @@ attach_button_clicked (MooPane *pane)
 }
 
 static void
-detach_button_clicked (MooPane *pane)
+detach_button_clicked (MooInternalPane *pane)
 {
     moo_paned_detach_pane (pane->parent, pane);
 }
 
 static void
 sticky_button_toggled (GtkToggleButton *button,
-                       MooPane         *pane)
+                       MooInternalPane         *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     moo_paned_set_sticky_pane (pane->parent, gtk_toggle_button_get_active (button));
@@ -531,7 +531,7 @@ sticky_button_toggled (GtkToggleButton *button,
 
 
 static void
-update_sticky_button (MooPane *pane)
+update_sticky_button (MooInternalPane *pane)
 {
     if (pane->parent)
     {
@@ -545,7 +545,7 @@ update_sticky_button (MooPane *pane)
 
 
 void
-moo_pane_set_frame_markup (MooPane    *pane,
+moo_pane_set_frame_markup (MooInternalPane    *pane,
                            const char *text)
 {
     char *tmp;
@@ -570,7 +570,7 @@ moo_pane_set_frame_markup (MooPane    *pane,
 }
 
 void
-moo_pane_set_frame_text (MooPane    *pane,
+moo_pane_set_frame_text (MooInternalPane    *pane,
                          const char *text)
 {
     char *tmp;
@@ -590,7 +590,7 @@ moo_pane_set_frame_text (MooPane    *pane,
 
 
 static GtkWidget *
-create_button (MooPane      *pane,
+create_button (MooInternalPane      *pane,
                GtkWidget    *toolbar,
                const char   *tip,
                gboolean      toggle,
@@ -619,8 +619,8 @@ create_button (MooPane      *pane,
 }
 
 static GtkWidget *
-create_frame_widget (MooPane        *pane,
-                     MooPanePosition position,
+create_frame_widget (MooInternalPane        *pane,
+                     MooInternalPanePosition position,
                      gboolean        embedded)
 {
     GtkWidget *vbox, *toolbar, *separator, *handle, *table, *child_holder;
@@ -726,12 +726,12 @@ create_frame_widget (MooPane        *pane,
 
     switch (position)
     {
-        case MOO_PANE_POS_LEFT:
-        case MOO_PANE_POS_RIGHT:
+        case MOO_INTERNAL_PANE_POS_LEFT:
+        case MOO_INTERNAL_PANE_POS_RIGHT:
             separator = gtk_vseparator_new ();
             break;
-        case MOO_PANE_POS_TOP:
-        case MOO_PANE_POS_BOTTOM:
+        case MOO_INTERNAL_PANE_POS_TOP:
+        case MOO_INTERNAL_PANE_POS_BOTTOM:
             separator = gtk_hseparator_new ();
             break;
     }
@@ -740,7 +740,7 @@ create_frame_widget (MooPane        *pane,
 
     switch (position)
     {
-        case MOO_PANE_POS_LEFT:
+        case MOO_INTERNAL_PANE_POS_LEFT:
             gtk_table_attach (GTK_TABLE (table), separator,
                               0, 1, 0, 1,
                               0, GTK_FILL, 0, 0);
@@ -748,7 +748,7 @@ create_frame_widget (MooPane        *pane,
                               1, 2, 0, 1,
                               GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
             break;
-        case MOO_PANE_POS_TOP:
+        case MOO_INTERNAL_PANE_POS_TOP:
             gtk_table_attach (GTK_TABLE (table), separator,
                               0, 1, 0, 1,
                               0, GTK_FILL, 0, 0);
@@ -756,7 +756,7 @@ create_frame_widget (MooPane        *pane,
                               0, 1, 1, 2,
                               GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
             break;
-        case MOO_PANE_POS_RIGHT:
+        case MOO_INTERNAL_PANE_POS_RIGHT:
             gtk_table_attach (GTK_TABLE (table), separator,
                               1, 2, 0, 1,
                               0, GTK_FILL, 0, 0);
@@ -764,7 +764,7 @@ create_frame_widget (MooPane        *pane,
                               0, 1, 0, 1,
                               GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
             break;
-        case MOO_PANE_POS_BOTTOM:
+        case MOO_INTERNAL_PANE_POS_BOTTOM:
             gtk_table_attach (GTK_TABLE (table), separator,
                               0, 1, 1, 2,
                               0, GTK_FILL, 0, 0);
@@ -778,7 +778,7 @@ create_frame_widget (MooPane        *pane,
 }
 
 static GtkWidget *
-create_label_widget (MooPanePosition position,
+create_label_widget (MooInternalPanePosition position,
                      GtkWidget     **label_widget,
                      GtkWidget     **icon_widget)
 {
@@ -790,10 +790,10 @@ create_label_widget (MooPanePosition position,
 
     switch (position)
     {
-        case MOO_PANE_POS_LEFT:
+        case MOO_INTERNAL_PANE_POS_LEFT:
             gtk_label_set_angle (GTK_LABEL (*label_widget), 90);
             break;
-        case MOO_PANE_POS_RIGHT:
+        case MOO_INTERNAL_PANE_POS_RIGHT:
             gtk_label_set_angle (GTK_LABEL (*label_widget), 270);
             break;
         default:
@@ -804,8 +804,8 @@ create_label_widget (MooPanePosition position,
 
     switch (position)
     {
-        case MOO_PANE_POS_LEFT:
-        case MOO_PANE_POS_RIGHT:
+        case MOO_INTERNAL_PANE_POS_LEFT:
+        case MOO_INTERNAL_PANE_POS_RIGHT:
             box = gtk_vbox_new (FALSE, SPACING_IN_BUTTON);
             break;
         default:
@@ -815,7 +815,7 @@ create_label_widget (MooPanePosition position,
 
     switch (position)
     {
-        case MOO_PANE_POS_LEFT:
+        case MOO_INTERNAL_PANE_POS_LEFT:
             gtk_box_pack_start (GTK_BOX (box), *label_widget, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (box), *icon_widget, FALSE, FALSE, 0);
             break;
@@ -831,7 +831,7 @@ create_label_widget (MooPanePosition position,
 
 
 static void
-paned_enable_detaching_notify (MooPane *pane)
+paned_enable_detaching_notify (MooInternalPane *pane)
 {
     gboolean enable;
     g_object_get (pane->parent, "enable-detaching", &enable, NULL);
@@ -839,7 +839,7 @@ paned_enable_detaching_notify (MooPane *pane)
 }
 
 static void
-paned_sticky_pane_notify (MooPane *pane)
+paned_sticky_pane_notify (MooInternalPane *pane)
 {
     update_sticky_button (pane);
 }
@@ -849,7 +849,7 @@ static void
 button_drag_leave (GtkWidget      *button,
                    G_GNUC_UNUSED GdkDragContext *context,
                    G_GNUC_UNUSED guint time,
-                   MooPane        *pane)
+                   MooInternalPane        *pane)
 {
     if (pane->open_timeout)
         g_source_remove (pane->open_timeout);
@@ -860,7 +860,7 @@ button_drag_leave (GtkWidget      *button,
 }
 
 static gboolean
-drag_open_pane (MooPane *pane)
+drag_open_pane (MooInternalPane *pane)
 {
     moo_pane_open (pane);
 
@@ -878,7 +878,7 @@ button_drag_motion (GtkWidget      *button,
                     G_GNUC_UNUSED int x,
                     G_GNUC_UNUSED int y,
                     guint           time,
-                    MooPane        *pane)
+                    MooInternalPane        *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), FALSE);
 
@@ -920,7 +920,7 @@ out:
 }
 
 static void
-setup_button_dnd (MooPane *pane)
+setup_button_dnd (MooInternalPane *pane)
 {
     gtk_drag_dest_set (pane->button, 0, NULL, 0, GDK_ACTION_COPY | GDK_ACTION_MOVE);
     g_signal_connect (pane->button, "drag-motion",
@@ -930,7 +930,7 @@ setup_button_dnd (MooPane *pane)
 }
 
 void
-moo_pane_set_drag_dest (MooPane *pane)
+moo_pane_set_drag_dest (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
 
@@ -943,7 +943,7 @@ moo_pane_set_drag_dest (MooPane *pane)
 }
 
 void
-moo_pane_unset_drag_dest (MooPane *pane)
+moo_pane_unset_drag_dest (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
 
@@ -971,8 +971,8 @@ moo_pane_unset_drag_dest (MooPane *pane)
 
 
 static void
-create_widgets (MooPane         *pane,
-                MooPanePosition  position,
+create_widgets (MooInternalPane         *pane,
+                MooInternalPanePosition  position,
                 GdkWindow       *pane_window)
 {
     GtkWidget *label;
@@ -1008,15 +1008,15 @@ create_widgets (MooPane         *pane,
                       G_CALLBACK (sticky_button_toggled), pane);
 }
 
-MooPane *
+MooInternalPane *
 _moo_pane_new (GtkWidget    *child,
-               MooPaneLabel *label)
+               MooInternalPaneLabel *label)
 {
-    MooPane *pane;
+    MooInternalPane *pane;
 
     g_return_val_if_fail (GTK_IS_WIDGET (child), NULL);
 
-    pane = g_object_new (MOO_TYPE_PANE, NULL);
+    pane = g_object_new (MOO_TYPE_INTERNAL_PANE, NULL);
     pane->child = g_object_ref (child);
     gtk_widget_show (pane->child);
     g_object_set_data (G_OBJECT (pane->child), "moo-pane", pane);
@@ -1028,14 +1028,14 @@ _moo_pane_new (GtkWidget    *child,
 }
 
 const char *
-moo_pane_get_id (MooPane *pane)
+moo_pane_get_id (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->id;
 }
 
 void
-_moo_pane_set_id (MooPane    *pane,
+_moo_pane_set_id (MooInternalPane    *pane,
                   const char *id)
 {
     char *tmp;
@@ -1048,7 +1048,7 @@ _moo_pane_set_id (MooPane    *pane,
 }
 
 void
-_moo_pane_set_parent (MooPane   *pane,
+_moo_pane_set_parent (MooInternalPane   *pane,
                       gpointer   parent,
                       GdkWindow *pane_window)
 {
@@ -1077,7 +1077,7 @@ _moo_pane_set_parent (MooPane   *pane,
 
 
 void
-_moo_pane_size_request (MooPane        *pane,
+_moo_pane_size_request (MooInternalPane        *pane,
                         GtkRequisition *req)
 {
     g_return_if_fail (MOO_IS_PANE (pane) && pane->frame != NULL);
@@ -1085,7 +1085,7 @@ _moo_pane_size_request (MooPane        *pane,
 }
 
 void
-_moo_pane_size_allocate (MooPane       *pane,
+_moo_pane_size_allocate (MooInternalPane       *pane,
                          GtkAllocation *allocation)
 {
     g_return_if_fail (MOO_IS_PANE (pane) && pane->frame != NULL);
@@ -1093,7 +1093,7 @@ _moo_pane_size_allocate (MooPane       *pane,
 }
 
 void
-_moo_pane_get_size_request (MooPane        *pane,
+_moo_pane_get_size_request (MooInternalPane        *pane,
                             GtkRequisition *req)
 {
     g_return_if_fail (MOO_IS_PANE (pane) && pane->frame != NULL);
@@ -1101,28 +1101,28 @@ _moo_pane_get_size_request (MooPane        *pane,
 }
 
 GtkWidget *
-_moo_pane_get_frame (MooPane *pane)
+_moo_pane_get_frame (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->frame;
 }
 
 GtkWidget *
-_moo_pane_get_focus_child (MooPane *pane)
+_moo_pane_get_focus_child (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->focus_child;
 }
 
 GtkWidget *
-_moo_pane_get_button (MooPane *pane)
+_moo_pane_get_button (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->button;
 }
 
 void
-_moo_pane_get_handle (MooPane    *pane,
+_moo_pane_get_handle (MooInternalPane    *pane,
                       GtkWidget **big,
                       GtkWidget **small)
 {
@@ -1132,21 +1132,21 @@ _moo_pane_get_handle (MooPane    *pane,
 }
 
 GtkWidget *
-_moo_pane_get_window (MooPane *pane)
+_moo_pane_get_window (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->window;
 }
 
 GtkWidget *
-moo_pane_get_child (MooPane *pane)
+moo_pane_get_child (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->child;
 }
 
 gpointer
-_moo_pane_get_parent (MooPane *pane)
+_moo_pane_get_parent (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), NULL);
     return pane->parent;
@@ -1154,7 +1154,7 @@ _moo_pane_get_parent (MooPane *pane)
 
 
 void
-_moo_pane_params_changed (MooPane *pane)
+_moo_pane_params_changed (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     if (!pane->params_changed_blocked)
@@ -1162,21 +1162,21 @@ _moo_pane_params_changed (MooPane *pane)
 }
 
 void
-_moo_pane_freeze_params (MooPane *pane)
+_moo_pane_freeze_params (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     pane->params_changed_blocked = TRUE;
 }
 
 void
-_moo_pane_thaw_params (MooPane *pane)
+_moo_pane_thaw_params (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     pane->params_changed_blocked = FALSE;
 }
 
 gboolean
-_moo_pane_get_detached (MooPane *pane)
+_moo_pane_get_detached (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), FALSE);
     return pane->params->detached;
@@ -1184,7 +1184,7 @@ _moo_pane_get_detached (MooPane *pane)
 
 
 void
-_moo_pane_unparent (MooPane *pane)
+_moo_pane_unparent (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
 
@@ -1244,7 +1244,7 @@ find_focus (GtkWidget *widget)
 }
 
 void
-_moo_pane_update_focus_child (MooPane *pane)
+_moo_pane_update_focus_child (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
 
@@ -1259,7 +1259,7 @@ _moo_pane_update_focus_child (MooPane *pane)
 
 
 static gboolean
-pane_window_delete_event (MooPane *pane)
+pane_window_delete_event (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), FALSE);
     moo_paned_attach_pane (pane->parent, pane);
@@ -1268,7 +1268,7 @@ pane_window_delete_event (MooPane *pane)
 
 static void
 keep_on_top_button_toggled (GtkToggleButton *button,
-                            MooPane         *pane)
+                            MooInternalPane         *pane)
 {
     gboolean active;
 
@@ -1296,7 +1296,7 @@ keep_on_top_button_toggled (GtkToggleButton *button,
 static gboolean
 pane_window_configure (GtkWidget         *window,
                        GdkEventConfigure *event,
-                       MooPane           *pane)
+                       MooInternalPane           *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), FALSE);
     g_return_val_if_fail (pane->window == window, FALSE);
@@ -1311,7 +1311,7 @@ pane_window_configure (GtkWidget         *window,
 }
 
 static void
-create_pane_window (MooPane *pane)
+create_pane_window (MooInternalPane *pane)
 {
     int width = -1;
     int height = -1;
@@ -1334,13 +1334,13 @@ create_pane_window (MooPane *pane)
 
     switch (_moo_paned_get_position (pane->parent))
     {
-        case MOO_PANE_POS_LEFT:
-        case MOO_PANE_POS_RIGHT:
+        case MOO_INTERNAL_PANE_POS_LEFT:
+        case MOO_INTERNAL_PANE_POS_RIGHT:
             width = moo_paned_get_pane_size (pane->parent);
             height = GTK_WIDGET(pane->parent)->allocation.height;
             break;
-        case MOO_PANE_POS_TOP:
-        case MOO_PANE_POS_BOTTOM:
+        case MOO_INTERNAL_PANE_POS_TOP:
+        case MOO_INTERNAL_PANE_POS_BOTTOM:
             height = moo_paned_get_pane_size (pane->parent);
             width = GTK_WIDGET(pane->parent)->allocation.width;
             break;
@@ -1378,7 +1378,7 @@ reparent (GtkWidget *widget,
 }
 
 void
-_moo_pane_detach (MooPane *pane)
+_moo_pane_detach (MooInternalPane *pane)
 {
     gboolean visible;
 
@@ -1429,7 +1429,7 @@ _moo_pane_detach (MooPane *pane)
 
 
 void
-_moo_pane_attach (MooPane *pane)
+_moo_pane_attach (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
 
@@ -1452,7 +1452,7 @@ _moo_pane_attach (MooPane *pane)
 
 
 void
-_moo_pane_try_remove (MooPane *pane)
+_moo_pane_try_remove (MooInternalPane *pane)
 {
     gboolean ret;
 
@@ -1471,7 +1471,7 @@ _moo_pane_try_remove (MooPane *pane)
 
 
 void
-moo_pane_open (MooPane *pane)
+moo_pane_open (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     g_return_if_fail (pane->parent != NULL);
@@ -1479,7 +1479,7 @@ moo_pane_open (MooPane *pane)
 }
 
 void
-moo_pane_present (MooPane *pane)
+moo_pane_present (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     g_return_if_fail (pane->parent != NULL);
@@ -1487,7 +1487,7 @@ moo_pane_present (MooPane *pane)
 }
 
 void
-moo_pane_attach (MooPane *pane)
+moo_pane_attach (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     g_return_if_fail (pane->parent != NULL);
@@ -1495,7 +1495,7 @@ moo_pane_attach (MooPane *pane)
 }
 
 void
-moo_pane_detach (MooPane *pane)
+moo_pane_detach (MooInternalPane *pane)
 {
     g_return_if_fail (MOO_IS_PANE (pane));
     g_return_if_fail (pane->parent != NULL);
@@ -1504,7 +1504,7 @@ moo_pane_detach (MooPane *pane)
 
 
 int
-moo_pane_get_index (MooPane *pane)
+moo_pane_get_index (MooInternalPane *pane)
 {
     g_return_val_if_fail (MOO_IS_PANE (pane), -1);
     if (pane->parent)
