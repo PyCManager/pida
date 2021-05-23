@@ -17,8 +17,6 @@ from pida.utils import json
 
 import py
 
-from pango import Font
-from gtk.gdk import Color
 
 from .base import BaseConfig
 from .environment import is_safe_mode, killsettings, settings_dir, workspace_name
@@ -38,11 +36,14 @@ def must_open_workspace_manager():
     data = json.load(settings_dir()/'appcontroller.json', fallback={})
     return bool(data.get('open_workspace_manager', False))
 
+
 def workspace_dir():
     return settings_dir().ensure('workspaces', workspace_name(), dir=1)
 
 
-class BaseChoice(str): pass
+class BaseChoice(str):
+    pass
+
 
 def choices(choices):
     """Helper to generate string options for choices"""
@@ -90,7 +91,6 @@ class OptionsConfig(BaseConfig):
     def __init__(self, service, *args, **kwargs):
         BaseConfig.__init__(self, service, *args, **kwargs)
 
-
     def unload(self):
         pass #XXX: stub
 
@@ -99,7 +99,6 @@ class OptionsConfig(BaseConfig):
         self._options = {}
         self.create_options()
         self.register_options()
-
 
     def create_options(self):
         """Create the options here"""
@@ -166,20 +165,19 @@ class OptionsConfig(BaseConfig):
     def dump_data(self, path, data):
         try:
             json.dump(data, path)
-        except Exception, e:
+        except Exception as e:
             self.svc.log.exception(e)
-
 
     def read(self):
         data = {}
         for d in (settings_dir, workspace_dir):
             try:
                 data.update(json.load(d()/self.name))
-            except ValueError, e:
+            except ValueError as e:
                 self.svc.log.error(_('Settings file corrupted: {file}'), file=d())
             except py.error.ENOENT:
                 pass
-            except Exception, e:
+            except Exception as e:
                 self.svc.log.exception(e)
         return data
 

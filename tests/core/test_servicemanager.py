@@ -153,12 +153,12 @@ class TestServiceManager(object):
 
     def test_service_manager_register(self):
         service = self.sm._loader.get_one('testservice')
-        print service.get_name()
+        print(service.get_name())
         self.sm._register(service)
         assert self.sm.get_service('testservice') is service
 
     def test_service_manager_load(self):
-        print self.sm._loader.get_all()
+        print(self.sm._loader.get_all())
         service = self.sm._loader.get_one('testservice')
         assert service.get_name() == 'testservice'
 

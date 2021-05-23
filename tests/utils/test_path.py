@@ -2,6 +2,7 @@ import os.path
 from unittest import TestCase
 from pida.utils.path import get_line_from_file, get_relative_path
 
+
 class TestPath(TestCase):
 
     def test_rel_path(self):

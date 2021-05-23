@@ -6,12 +6,11 @@ from pida.services.language.deflang import DEFMAPPING
 lexers = list(get_all_lexers())
 
 
-
 def tryremoveall(entry, name, items):
     if name not in entry:
         return
-    if isinstance(entry[name], basestring):
-        print 'omg', entry['human'], name
+    if isinstance(entry[name], (str, bytes)):
+        print('omg', entry['human'], name)
         data = set([entry[name]])
     else:
         data = set(entry[name])
@@ -20,6 +19,7 @@ def tryremoveall(entry, name, items):
         entry[name] = sorted(data)
     else:
         del entry[name]
+
 
 def cleanup(name, alias, glob, mime):
     if name not in DEFMAPPING:
@@ -39,9 +39,9 @@ for lexer in lexers:
     cleanup(*lexer)
 
 
-
 def lexer_by_name_or_alias(name, alias):
-    try: return get_lexer_by_name(name)
+    try:
+        return get_lexer_by_name(name)
     except:
         for name in alias:
             try:

@@ -114,6 +114,7 @@ class BaseDocumentHandler(object):
         """
         pass
 
+
 class BaseCachedDocumentHandler(BaseDocumentHandler):
     """
     Default cache implementation for Languge Plugins.
@@ -169,11 +170,13 @@ class Outliner(BaseCachedDocumentHandler):
 class Validator(BaseCachedDocumentHandler):
     pass
 
+
 class Definer(BaseDocumentHandler):
     """
     The definer class is used to allow the user to the definition of a
     word.
     """
+
 
 class Documentator(BaseDocumentHandler):
     """
@@ -289,7 +292,6 @@ class LanguageServiceFeaturesConfig(FeaturesConfig):
                 self.subscribe_foreign('language', 'info', lname,
                                        self.svc.language_info)
 
-
         for factory_name, feature in mapping.iteritems():
             factory = getattr(self.svc, factory_name)
             if factory is not None:
@@ -325,7 +327,6 @@ class SnippetTemplate(object):
         Returns a list of Text and Template Tokens
         """
         return []
-
 
 
 # Proxy type for generator objects
@@ -382,6 +383,7 @@ class ExternalMeta(type):
             cls.register(type_, dct[type_])
         cls.register('run', run, proxytype=GeneratorProxy)
 
+
 class External(SyncManager):
     """
     The External superclass is used to configure and control the external
@@ -413,8 +415,6 @@ class External(SyncManager):
     def run(instance):
         for i in instance.run():
             yield i
-
-
 
 
 class ExternalDocument(Document):
@@ -451,6 +451,7 @@ class ExternalDocument(Document):
         pass
     project = property(_get_project, _set_project)
 
+
 class ExternalProxy(BaseCachedDocumentHandler):
     """
     Base Class for all proxy objects.
@@ -482,6 +483,7 @@ class ExternalProxy(BaseCachedDocumentHandler):
 
     def run(self, *k, **kw):
         return self.svc.jobserver.run(self, *k, **kw)
+
 
 class Merger(BaseDocumentHandler):
     """
@@ -530,7 +532,7 @@ def safe_remote(func):
         try:
             for i in func(self, *args, **kwargs):
                 yield i
-        except RuntimeError, e:
+        except RuntimeError as e:
             self.log.warning(_("problems running external plugin: {err}"),
                              err=e)
             self.restart()
@@ -563,7 +565,7 @@ class JobServer(Log):
         It tries to use the same instance for proxy so it does not need to
         be recreated and can make best use of caching
         """
-        #FIXME needs some better management of processes and dispatching
+        # FIXME needs some better management of processes and dispatching
         if not self._processes:
             np = self._external()
             np.start()
@@ -662,8 +664,8 @@ class LanguageService(Service):
                     proxy = newproxy(old, name)
                     setattr(self, attr, proxy)
 
-
         super(LanguageService, self).__init__(boss)
+
         self.boss = boss
         if self.external is not None and multiprocessing:
             self.jobserver = self.jobserver_factory(self, self.external)

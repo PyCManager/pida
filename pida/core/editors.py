@@ -98,7 +98,6 @@ class EditorActionsConfig(ActionsConfig):
             global_=True
         )
 
-
     def on_undo(self, action):
         self.svc.undo()
 
@@ -120,6 +119,7 @@ class EditorActionsConfig(ActionsConfig):
     def on_focus_editor(self, action):
         self.svc.grab_focus()
         self.svc.window.present()
+
 
 class EditorCommandsConfig(CommandsConfig):
 
@@ -183,13 +183,13 @@ class EditorService(Service):
             return False
         try:
             self.open(docs.pop())
-        except DocumentException, err:
+        except DocumentException as err:
             self.log.exception(err)
             self.emit('document-exception', error=err)
         return True
 
     def open_list(self, documents):
-        #XXX: this way is not acceptable, and only the fallback
+        # XXX: this way is not acceptable, and only the fallback
         # solution for editors not implementing the open_list interface
 
         # make a copy of the file list as we modify it and
@@ -203,10 +203,11 @@ class EditorService(Service):
 
 
 LINEMARKER_TYPES = [
-'bookmark',
-'debugger_breakpoint',
-'debugger_position',
+    'bookmark',
+    'debugger_breakpoint',
+    'debugger_position',
 ]
+
 
 class LineMarker(object):
     """
@@ -248,6 +249,7 @@ class LineMarker(object):
 
     def __repr__(self):
         return '<LineMarker %s %s>' % (self.filename, self._lineno)
+
 
 class MarkerInterface(object):
     """

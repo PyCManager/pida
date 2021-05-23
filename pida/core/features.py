@@ -9,6 +9,7 @@
 
 from pida.core.base import SubscriberConfig
 
+
 class FeaturesConfig(SubscriberConfig):
     foreign_name = "features"
 

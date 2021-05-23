@@ -10,7 +10,8 @@ log.basicConfig(level=log.INFO)
 
 try:
     import jinja2
-except ImportError, e:
+
+except ImportError as e:
     log.fatal("jinja2 is required for the creator script")
     sys.exit(1)
 
@@ -19,12 +20,14 @@ VALUES = {}
 TYPE = "plugin"
 path = ''
 
+
 def is_bool(value):
     if value in ['y', 'Y']:
         return True
     if value in ['n', 'N']:
         return False
     return None
+
 
 def generate():
     top = os.path.join(os.path.dirname(__file__), 'skeleton')
@@ -38,7 +41,7 @@ def generate():
             tmpl = open(os.path.join(dirpath, fname)).read()
             jtemp = jinja2.Template(tmpl)
             content = jtemp.render(VALUES)
-            fp = open(os.path.join(outdir, outname), 
+            fp = open(os.path.join(outdir, outname),
                       "w")
             fp.write(content)
             fp.close()
@@ -68,25 +71,24 @@ def fill_details():
     while is_language is None:
         is_language = is_bool(raw_input('Is it a language plugin ? [y|N]: '))
         if is_language is None:
-            is_language = False 
+            is_language = False
 
     VALUES['languageservice'] = is_language
     if is_language:
         language_names = None
         while not language_names:
             language_names = raw_input('Languages this plugin supports, seperated by ",": ')
-        
+
         language_names = language_names.split(',')
         VALUES['language_names'] = language_names
-    
-        
+
+
     if os.path.exists(VALUES['path']):
         log.fatal("target directory exists: %s" %VALUES['path'])
         sys.exit(1)
-    
+
     os.mkdir(VALUES['path'])
     generate()
-    
 
 
 def prime_parser():
@@ -98,6 +100,7 @@ def prime_parser():
     #    action='store_false',
     #    default=True)
     return parser
+
 
 def main():
     global TYPE

@@ -97,7 +97,7 @@ class Service(object):
         """
         try:
             self.stop()
-        except Exception, e:
+        except Exception as e:
             self.log.exception(e)
             # big fat warning to the user
             self.log.error(
@@ -163,7 +163,6 @@ class Service(object):
             return logbook.Logger('pida.svc.' + self.get_name())
         else:
             return logbook.Logger('pida.plugin.' + self.get_name())
-
 
     # window proxy
 

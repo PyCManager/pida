@@ -46,7 +46,7 @@ class ActionWindowMapping(list):
     @staticmethod
     def _genkey(key):
         """Returns the key for a action"""
-        return 'window_config_%s' %key.replace(".", "_")
+        return 'window_config_%s' % key.replace(".", "_")
 
     def add(self, config):
         """
@@ -107,7 +107,7 @@ class WindowCommandsConfig(CommandsConfig):
         pane = self.svc.window.get_focus_pane()
         if pane:
             self.svc.window.paned.set_params(
-                    pane, 
+                    pane,
                     keep_on_top=not pane.get_params().keep_on_top)
 
     def remove_view(self, view):
@@ -124,6 +124,7 @@ class WindowCommandsConfig(CommandsConfig):
 
     def is_added(self, view):
         return view in self.svc.window
+
 
 class WindowActionsConfig(ActionsConfig):
 
@@ -235,7 +236,7 @@ class WindowActionsConfig(ActionsConfig):
         )
 
     def on_focus_window(self, action):
-        if action.visible_action and isinstance(action.visible_action, 
+        if action.visible_action and isinstance(action.visible_action,
                                           (TYPE_TOGGLE, TYPE_REMEMBER_TOGGLE)):
                 action.visible_action.set_active(True)
         self.svc.present_key_window(action.key)
@@ -278,7 +279,7 @@ class WindowActionsConfig(ActionsConfig):
         self._set_action_keypress_from_option(option)
 
     def _create_key_option(self, act, name, label, tooltip, accel, global_=False):
-        opt = super(WindowActionsConfig, self)._create_key_option(act, 
+        opt = super(WindowActionsConfig, self)._create_key_option(act,
                                             name, label, tooltip, accel, global_=global_)
 
         if name[:14] == 'window_config_':
@@ -493,7 +494,7 @@ class Window(Service):
                     cur[action.get_name()] = action.props.active
             if cur:
                 data[service.get_name()] = cur
-        
+
         try:
             json.dump(data, self.state_config)
         except:
@@ -519,7 +520,7 @@ class Window(Service):
             self._title_template = string.Template(self.opt('window_title'))
         if document is None:
             document = self.boss.cmd('buffer', 'get_current')
-        
+
         subs = {'basename': document.basename or _('New Document'),
                 'filepath': document.filename or _('New Document'),
                 'directory': document.directory or '',
@@ -527,9 +528,9 @@ class Window(Service):
                 'project_path': document.project and document.project.data_dir or '',
                 'project_name': document.project_name
                }
-        
+
         self.window.set_title(self._title_template.safe_substitute(subs))
-        
+
 
     def _fix_visibilities(self):
         for name in ['show_toolbar', 'show_menubar']:
@@ -563,7 +564,7 @@ class Window(Service):
                     # this maight fail due various reasons, like
                     # the window was destroyed etc
                     self._last_focus.grab_focus()
-                except: 
+                except:
                     pass
 
     def get_fullscreen(self, var):
@@ -601,10 +602,10 @@ class Window(Service):
             self._action_group.add_action(act)
             self.boss.window._uim._uim.add_ui(
                 self._window_list_id,
-                "ui/menubar/AddMenu/WindowMenu/window_list", 
-                "_%s" %pane.label_text, 
-                action_name, 
-                gtk.UI_MANAGER_MENUITEM, 
+                "ui/menubar/AddMenu/WindowMenu/window_list",
+                "_%s" %pane.label_text,
+                action_name,
+                gtk.UI_MANAGER_MENUITEM,
                 False)            #mi = act.create_menu_item()
             i += 1
         # add documents to list
@@ -621,10 +622,10 @@ class Window(Service):
             self._action_group.add_action(act)
             self.boss.window._uim._uim.add_ui(
                 self._window_list_id,
-                "ui/menubar/AddMenu/WindowMenu/buffer_list", 
-                unicode(doc), 
-                action_name, 
-                gtk.UI_MANAGER_MENUITEM, 
+                "ui/menubar/AddMenu/WindowMenu/buffer_list",
+                unicode(doc),
+                action_name,
+                gtk.UI_MANAGER_MENUITEM,
                 False)
             i += 1
         self.boss.window._uim.ensure_update()
@@ -632,7 +633,5 @@ class Window(Service):
 
 # Required Service attribute for service loading
 Service = Window
-
-
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

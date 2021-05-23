@@ -93,7 +93,7 @@ _moo_window_set_icon_from_stock (GtkWindow  *window,
 
 
 struct MooInternalPane {
-    GtkObject base;
+    AtkObject base;
 
     char         *id;
     MooInternalPaned     *parent;
@@ -136,7 +136,7 @@ struct MooInternalPane {
 };
 
 struct MooInternalPaneClass {
-    GtkObjectClass base_class;
+    AtkObjectClass base_class;
     gboolean (*remove) (MooInternalPane *pane);
 };
 
@@ -1365,7 +1365,7 @@ create_pane_window (MooInternalPane *pane)
 }
 
 /* XXX gtk_widget_reparent() doesn't work here for some reasons */
-/* shouldn't it work now, as I fixed GTK_NO_WINDOW flag? */
+/* shouldn't it work now, as I fixed ATK_XY_WINDOW flag? */
 static void
 reparent (GtkWidget *widget,
           GtkWidget *old_container,
@@ -1540,7 +1540,7 @@ G_DEFINE_TYPE (MooIconWidget, _moo_icon_widget, GTK_TYPE_WIDGET)
 static void
 _moo_icon_widget_init (MooIconWidget *icon)
 {
-    GTK_WIDGET_SET_FLAGS (icon, GTK_NO_WINDOW);
+    GTK_WIDGET_SET_FLAGS (icon, ATK_XY_WINDOW);
     icon->pixbufs = NULL;
     icon->data = NULL;
     icon->type = ICON_PIXBUFS;

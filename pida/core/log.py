@@ -23,11 +23,13 @@ from threading import Lock
 
 log = logbook.Logger('pida')
 
+
 def configure():
     if is_debug():
         pida_handler.level = logbook.DEBUG
     else:
         pida_handler.level = logbook.NOTICE
+
 
 class Log(object):
 
@@ -82,11 +84,9 @@ class RollOverHandler(logbook.Handler):
                 self.enqueue(record)
 
 
-
-
 null = logbook.NullHandler()
 pida_handler = logbook.StderrHandler()
 rollover = RollOverHandler(bubble=True)
 
-nested_setup = logbook.NestedSetup([ null, pida_handler, rollover ])
+nested_setup = logbook.NestedSetup([null, pida_handler, rollover])
 nested_setup.push_application()

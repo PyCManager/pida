@@ -57,7 +57,7 @@ class Indexer(Log):
         try:
             with open(path, "w") as fp:
                 pickle.dump(self.cache, fp)
-        except OSError, err:
+        except OSError as err:
             self.log.error("can't save cache: {err}", err=err)
 
     def load_cache(self):
@@ -67,7 +67,7 @@ class Indexer(Log):
                 with open(path) as fp:
                     self.cache = pickle.load(fp)
                 return True
-            except Exception, err:
+            except Exception as err:
                 self.log.error("can't load cache of {indexer!r}", indexer=self)
                 os.unlink(path)
         return False
@@ -108,7 +108,7 @@ class Indexer(Log):
         else:
             try:
                 info = FileInfo(path, rpath)
-            except OSError, err:
+            except OSError as err:
                 self.log.info(_("Error indexing {path}:{err}"), path=path, err=err)
                 return
         info.doctype = doctype and doctype.internal or None
@@ -150,7 +150,6 @@ class Indexer(Log):
                 del self.cache['paths'][key]
 
         del self.cache['paths'][info.relpath]
-
 
     def index(self, path="", recrusive=False, rebuild=False):
         """
@@ -208,15 +207,13 @@ class Indexer(Log):
             # will most likely raise. they are harmless
             pass
 
-
-
     def query(self, test):
         """
         Get results from the file index.
         This is the most powerfull but slowest test.
 
         :param test:
-            callable which gets a FileInfo object passed 
+            callable which gets a FileInfo object passed
             and returns a :class:`Result` object
         """
         paths = sorted(self.cache['paths'])

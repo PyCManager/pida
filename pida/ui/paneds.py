@@ -39,6 +39,7 @@ POS_MAP = {
     PANE_PLUGIN: PANE_POS_RIGHT,
 }
 
+
 class PidaPaned(BigPaned):
 
     gsignal('pane-attachment-changed', gobject.TYPE_PYOBJECT, bool)
@@ -119,7 +120,7 @@ class PidaPaned(BigPaned):
             pane.view = view
             if not removable:
                 pane.set_property('removable', False)
-            view._on_remove_attempt_id = pane.connect('remove', 
+            view._on_remove_attempt_id = pane.connect('remove',
                                                       view.on_remove_attempt)
             view.toplevel.parent.set_name('PidaWindow')
             if present:
@@ -144,7 +145,7 @@ class PidaPaned(BigPaned):
         self.remove_pane(view.get_toplevel())
         view.pane = None
 
-    def detach_view(self, view, size=(400,300)):
+    def detach_view(self, view, size=(400, 300)):
         paned, pos = self.find_pane(view.get_toplevel())
         dparam = PaneParams(keep_on_top=True, detached=True)
         paned.set_params(dparam)
@@ -154,7 +155,6 @@ class PidaPaned(BigPaned):
     def present_view(self, view):
         pane, pos = self.find_pane(view.get_toplevel())
         pane.present()
-
 
     def list_panes(self, every=False):
         for paned in self.get_all_paneds(every):
@@ -179,7 +179,7 @@ class PidaPaned(BigPaned):
     def present_pane_if_not_focused(self, pane):
         """
         Present a pane if it (means any child) does not have the focus
-        
+
         Returns True if the pane was presented
         """
         # test if it is detached
@@ -189,7 +189,7 @@ class PidaPaned(BigPaned):
                 return True
             else:
                 return False
-        
+
         # most top focus candidate
         if getattr(pane.view, 'focus_ignore', False):
             return False
@@ -210,14 +210,14 @@ class PidaPaned(BigPaned):
         """
         Updates the parameters on a pane.
         Keyword arguments can be one of the following:
-        
+
         @keep_on_top: sets the sticky flag
         @detached: sets if the window is detached from the main window
         @window_position: position of the pane in detached mode
         @maximized: ???
         """
         oparam = pane.get_params()
-        #OMFG don't look at this, 
+        #OMFG don't look at this,
         # but changing the params does not work for keep_on_top
         try:
             mbuttons = pane.get_child().get_parent().get_parent().\
@@ -248,7 +248,7 @@ class PidaPaned(BigPaned):
             mbuttons = None
             is_top = oparam.keep_on_top
 
-        nparam = PaneParams(keep_on_top=is_top, 
+        nparam = PaneParams(keep_on_top=is_top,
                             detached=kwargs.get('detached', oparam.detached),
                             window_position=kwargs.get('window_position', oparam.window_position),
                             maximized=kwargs.get('maximized', oparam.maximized))
@@ -339,7 +339,7 @@ class PidaPaned(BigPaned):
         try:
             px, py, pw, ph, pbd = view.svc.window.window.get_geometry()
         except AttributeError:
-            # this can fail if the window is not yet realized, so skip the 
+            # this can fail if the window is not yet realized, so skip the
             # the renice stuff :-(
             return
         w, h = size

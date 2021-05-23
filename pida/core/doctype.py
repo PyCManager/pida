@@ -12,6 +12,7 @@
 from glob import fnmatch
 from collections import defaultdict
 
+
 class DocType(object):
     """Represents a type of document. Like a python sourcecode file, a xml
     file, etc.
@@ -55,6 +56,7 @@ class DocType(object):
     def __repr__(self):
         return '<DocType %s %s>' % (self.internal, self.human)
 
+
 class TypeManager(dict):
     """
     DocType Library
@@ -68,7 +70,7 @@ class TypeManager(dict):
 
     def add(self, doctype):
         if doctype.internal in self:
-            raise "doctype already registed"
+            raise ("doctype already registed")
         self[doctype.internal] = doctype
         for ext in doctype.extensions:
             if ext:
@@ -92,7 +94,7 @@ class TypeManager(dict):
     def types_by_filename(self, filename):
         """Returns a list of DocTypes matching for the given filename"""
         if not filename:
-            #FIXME: return default type
+            # FIXME: return default type
             return []
         rv = []
         for test in self._globs.keys():

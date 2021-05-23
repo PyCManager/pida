@@ -23,12 +23,14 @@ from pida.core.locale import Locale
 locale = Locale('pida')
 _ = locale.gettext
 
+
 def with_gdk_lock(func):
     @wraps(func)
     def _wrapped(*k, **kw):
         with gdk.lock:
             func(*k, **kw)
     return _wrapped
+
 
 def with_gdk_leave(func):
     @wraps(func)
@@ -38,6 +40,7 @@ def with_gdk_leave(func):
         finally:
             gdk.threads_leave()
     return _wrapped
+
 
 class Window(gtk.Window):
 
@@ -60,18 +63,18 @@ class Window(gtk.Window):
 
     # Dialogs
     def save_dlg(self, *args, **kw):
-        return dialogs.save(parent = self, *args, **kw)
+        return dialogs.save(parent=self, *args, **kw)
 
     def open_dlg(self, *args, **kw):
-        return dialogs.open(parent = self, *args, **kw)
+        return dialogs.open(parent=self, *args, **kw)
 
     @with_gdk_leave
     def info_dlg(self, *args, **kw):
-        return dialogs.info(parent = self, *args, **kw)
+        return dialogs.info(parent=self, *args, **kw)
 
     @with_gdk_leave
     def error_dlg(self, *args, **kw):
-        return dialogs.error(parent = self, *args, **kw)
+        return dialogs.error(parent=self, *args, **kw)
 
     def yesno_dlg(self, *args, **kw):
         return dialogs.yesno(parent = self, *args, **kw) == gtk.RESPONSE_YES
@@ -88,7 +91,6 @@ class Window(gtk.Window):
 class PidaWindow(Window):
 
     """Main PIDA Window"""
-
 
     def create_all(self):
         self.set_role('Main')
@@ -142,7 +144,7 @@ class PidaWindow(Window):
         try:
             content = pkgutil.get_data(package, path)
             return self._uim.add_ui_from_string(content)
-        except Exception, e:
+        except Exception as e:
             log.debug('unable to get %s: %r resource: %s' %
                                 (package, path, e))
 

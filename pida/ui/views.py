@@ -6,13 +6,12 @@
 
 import gtk
 
-from pygtkhelpers.delegates import SlaveView
+from pygtk.helpers.delegates import SlaveView
 
 # locale
 from pida.core.locale import Locale
 locale = Locale('pida')
 _ = locale.gettext
-
 
 
 class PidaView(SlaveView):

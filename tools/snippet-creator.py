@@ -1,5 +1,3 @@
-
-
 import os
 
 meta_tmpl = """[meta]

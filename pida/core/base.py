@@ -19,6 +19,7 @@
 
 """
 
+
 class BaseConfig(object):
 
     def __init__(self, service):
@@ -27,7 +28,6 @@ class BaseConfig(object):
 
     def create(self):
         """Override to do the creations"""
-
 
 
 class SimpleMap(dict):
@@ -40,6 +40,7 @@ class SimpleMap(dict):
 
     def add(self, name, instance):
         self[name] = instance
+
 
 class SubscriberConfig(BaseConfig):
     """
@@ -125,9 +126,8 @@ class SubscriberConfig(BaseConfig):
 
         self.foreign_subscriptions = []
 
-
     def has_foreign(self, service, point):
-        #XXX: O(N) sucks, but the N shouldn't be that high
+        # XXX: O(N) sucks, but the N shouldn't be that high
         return any(fservice == service and fpoint == point
                    for fservice, fpoint, i in self.foreign_subscriptions)
 

@@ -27,7 +27,6 @@ locale = Locale('pida')
 _ = locale.gettext
 
 
-
 class Boss(object):
 
     def __init__(self):

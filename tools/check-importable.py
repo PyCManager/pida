@@ -10,4 +10,4 @@ for subdir in subdirs:
         try:
             pyfile.pyimport()
         except:
-            print pyfile, 'not importable'
+            print(pyfile, 'not importable')

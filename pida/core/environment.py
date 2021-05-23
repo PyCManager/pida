@@ -15,7 +15,6 @@ from argparse import ArgumentParser
 from functools import partial
 
 import py
-
 import gtk
 import pida
 # locale
@@ -28,6 +27,7 @@ base_path = py.path.local(pida.__file__).pypkgpath()
 
 resources = dict(uidef=[], pixmaps=[], data=[])
 
+
 def find_resource(kind, name):
     for item in resources[kind]:
         full = item/name
@@ -35,12 +35,14 @@ def find_resource(kind, name):
             return str(full)
     raise EnvironmentError('Could not find %s resource: %s' % (kind, name))
 
+
 def add_global_base(service_path):
     service_path = py.path.local(service_path)
     for kind in 'uidef', 'pixmaps', 'data':
         path = service_path/kind
         if path.check(dir=True):
             resources[kind].append(path)
+
 
 add_global_base(base_path/'resources')
 
@@ -51,17 +53,24 @@ get_data_path = partial(find_resource, 'data')
 def home(*parts):
     return py.path.local(os.path.expanduser(opts.pida_home)).join(*parts)
 
+
 def firstrun_file():
     return home('first_run_wizard')
+
 
 def settings_dir(*parts):
     return home('settings', *parts)
 
+
 def plugins_dir():
     return home().ensure('plugins', dir=1)
+
+
 plugins_path = []
+
+
 def setup_plugins_paths():
-    #XXX: development hack
+    # XXX: development hack
     buildin_plugins_dir = base_path.join('../pida-plugins')
 
     if buildin_plugins_dir.check(dir=1):
@@ -69,12 +78,12 @@ def setup_plugins_paths():
     else:
         plugins_path[:] = [str(plugins_dir())]
 
+
 def parse_gtk_rcfiles():
     gtk.rc_add_default_file(get_data_path('gtkrc-2.0'))
     gtk.rc_add_default_file(home("gtkrc-2.0").strpath)
     # we have to force reload the settings
     gtk.rc_reparse_all_for_settings(gtk.settings_get_default(), True)
-
 
 
 parser = ArgumentParser()
@@ -114,6 +123,7 @@ env = dict(os.environ)
 on_windows = sys.platform == 'win32' #XXX: checked only on xp
 opts = None
 
+
 def parse_args(argv):
     global opts
     opts = parser.parse_args(argv)
@@ -132,25 +142,32 @@ parse_args([])
 def is_debug():
     return opts.debug
 
+
 def is_firstrun():
     return not firstrun_file().check() or opts.firstrun
 
+
 def is_safe_mode():
     return opts.safe_mode
+
 
 def workspace_name():
     if not opts.workspace:
         return "default"
     return opts.workspace
 
+
 def workspace_set():
     return opts.workspace is not None
+
 
 def workspace_manager():
     return opts.manager
 
+
 def killsettings():
     return opts.killsettings
+
 
 def get_plugin_global_settings_path(name, filename=None):
     path = home().ensure(name, dir=1)

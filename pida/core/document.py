@@ -19,6 +19,7 @@ from pida.utils.descriptors import cached_property
 
 new_file_counter = itertools.count(1)
 
+
 class Document(object):
     """
     Represents a document.
@@ -53,8 +54,6 @@ class Document(object):
         self.creation_time = time.time()
         self._project = project
 
-
-
     def project_and_path(self):
         if self.filename is None:
             return None, None
@@ -76,8 +75,6 @@ class Document(object):
         if pp is not None:
             return pp[1]
         return os.path.join(*os.path.split(self.directory)[-2:])
-
-
 
     def _get_doctype(self):
         #FIXME: need a interface to pull doctype from the editor if
@@ -115,7 +112,7 @@ class Document(object):
         """
         Returns the mimetype guessed from the file
         """
-        #FIXME: use doctypes
+        # FIXME: use doctypes
         typ, encoding = mimetypes.guess_type(self.filename)
         if typ is None:
             mimetype = ('', '')
@@ -167,7 +164,6 @@ class Document(object):
                 return fp.read()
         except IOError:
             return None
-
 
     @property
     def directory(self):

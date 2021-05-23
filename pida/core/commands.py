@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    Commandsconfig
+    CommandsConfig
     ~~~~~~~~~~~~~~
 
     They expose the commands a service/plugin provides via methods.
@@ -18,7 +18,5 @@ class CommandsConfig(BaseConfig):
         cmd = getattr(self, name)
         val = cmd(**kw)
         return val
-
-
 
 # vim:set shiftwidth=4 tabstop=4 expandtab textwidth=79:

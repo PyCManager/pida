@@ -6,7 +6,6 @@
     :copyright: 2005-2008 by The PIDA Project
     :license: GPL 2 or later (see README/COPYING/LICENSE)
 """
-import pkgutil
 import gtk
 from pida.core.options import OptionsConfig
 from pida.ui.actions import (
@@ -29,6 +28,7 @@ accelerator_group.lock()
 # the global accelerator group will be added to detached windows as well
 global_accelerator_group = gtk.AccelGroup()
 global_accelerator_group.lock()
+
 
 class ActionsConfig(OptionsConfig):
     # this inherits from options in order to ease storing the mapping betwen
@@ -176,7 +176,6 @@ class ActionsConfig(OptionsConfig):
 #         self.accelerator_group.connect('accel-changed', on_accel_changed,
 #                 opt, act)
 
-
     def get_action(self, name):
         """
         Get the named action
@@ -211,7 +210,8 @@ class ActionsConfig(OptionsConfig):
         Set the keyboard shortcuts for the actions with keyboard shortcuts
         enabled.
         """
-        self.register_options() #XXX: hack
+        #XXX: hack
+        self.register_options()
         for opt in self:
             self._set_action_keypress_from_option(opt)
 

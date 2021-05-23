@@ -10,6 +10,7 @@
 
 from base import SubscriberConfig
 
+
 class EventsConfig(SubscriberConfig):
 
     foreign_name = 'events'

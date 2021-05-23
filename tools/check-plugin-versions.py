@@ -16,11 +16,11 @@ plugin_files = [file for file in wctx
                 if file.startswith('pida-plugins')]
 
 bump_these = []
-print 'scanning for plugins in need of a version bump'
+print('scanning for plugins in need of a version bump')
 
 for file in plugin_files:
     base, name = file.rsplit('/', 1)
-    if name == 'service.pida': 
+    if name == 'service.pida':
         #XXX: inaccurate, but reasonable
         #     will get confused about metadata changes without bump
         last_bump = wctx[file].linkrev()
@@ -49,8 +49,8 @@ def try_bump(version):
     """
     try:
         numbers = map(int, version.split('.'))
-        numbers[-1]+=1
-        version = '.'.join(map(str,numbers))
+        numbers[-1] += 1
+        version = '.'.join(map(str, numbers))
     except:
         pass
     return version
@@ -63,7 +63,7 @@ for name, bump, change in bump_these:
 
     metadata = from_plugin(base, name)
     new_version = try_bump(metadata.version)
-    print '%15s %s -> %s' %(name, metadata.version, new_version)
+    print('%15s %s -> %s' % (name, metadata.version, new_version))
     if do_bump:
         metadata.version = new_version
 

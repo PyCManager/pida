@@ -25,7 +25,7 @@ locale = Locale('pida')
 _ = locale.gettext
 
 
-#FIXME: win32 fixup
+# FIXME: win32 fixup
 DATA_DIR = ".pida-metadata"
 
 
@@ -77,7 +77,7 @@ class Project(Log):
                     'cant create {data_dir}',
                     data_dir=self.data_dir)
 
-        #XXX: this might need wrappers for reload
+        # XXX: this might need wrappers for reload
         for mod in self.__data.values():
             if hasattr(mod, 'reload'):
                 mod.reload()

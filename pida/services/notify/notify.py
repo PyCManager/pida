@@ -5,7 +5,7 @@
 """
 
 #
-# Some part of code are taken of old Gajim version : 
+# Some part of code are taken of old Gajim version :
 # http://trac.gajim.org/browser/trunk/src/tooltips.py
 #
 
@@ -22,7 +22,7 @@ from pida.core.commands import CommandsConfig
 from pida.core.service import Service
 from pida.core.features import FeaturesConfig
 from pida.core.options import OptionsConfig, choices
-from pida.core.actions import (ActionsConfig, TYPE_NORMAL, TYPE_MENUTOOL, 
+from pida.core.actions import (ActionsConfig, TYPE_NORMAL, TYPE_MENUTOOL,
                                TYPE_REMEMBER_TOGGLE)
 from pida.ui.buttons import create_mini_button
 from pygtkhelpers.gthreads import gcall
@@ -37,6 +37,7 @@ pynotify.init('PIDA')
 
 from logbook.handlers import Handler, StreamHandler
 from pida.core.log import rollover
+
 
 class MainloopSendHandler(Handler):
     def __init__(self, handlers):
@@ -67,6 +68,7 @@ class TextBufferStream(object):
             titer = self.buffer.get_end_iter(drang)
             titer.forward_to_line_end()
             self.buffer.delete(self.buffer.get_start_iter(), titer)
+
 
 class ErrorCallerHandler(Handler):
     def __init__(self, callback):
@@ -257,7 +259,7 @@ class Notify(Service):
     commands_config = NotifyCommandsConfig
     options_config = NotifyOptionsConfig
     features_config = NotifyFeaturesConfig
-    
+
     def start(self):
         self._error_handler =  ErrorCallerHandler(self._on_error)
         self._log_stream = TextBufferStream()

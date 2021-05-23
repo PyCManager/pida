@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 """
     The Emacs editor core classes for Pida
@@ -13,8 +13,8 @@
 
     :copyright: 2007-2008 by The PIDA Project
     :license: GPL 2 or later (see README/COPYING/LICENSE)
- 
-""" 
+
+"""
 
 
 import os
@@ -24,7 +24,7 @@ import pida.core.environment as env
 
 from pida.ui.views import PidaView
 
-from pida.core.editors import EditorService 
+from pida.core.editors import EditorService
 
 # Emacs specific
 from .emacsembed import EmacsEmbedWidget
@@ -34,9 +34,10 @@ from pida.core.pdbus import DbusConfig, EXPORT
 
 EEXPORT = EXPORT(suffix='emacs')
 
+
 class EmacsView(PidaView):
     """
-    UI class for emacs editor 
+    UI class for emacs editor
     uses EmacsEmbedWidget to integrate into a PidaView widget
     """
     def create_ui(self):
@@ -57,7 +58,7 @@ class EmacsView(PidaView):
 class EmacsCallback(object):
     """Emacs editor callback behaviours.
 
-    Communication is done over dbus 
+    Communication is done over dbus
     """
 
     def __init__(self, svc):
@@ -84,11 +85,11 @@ class EmacsCallback(object):
             if filename and (not current or current.filename != filename):
                 self._log.debug('emacs buffer changed "%s"' % filename)
                 if os.path.isdir(filename):
-                    self._svc.boss.cmd('filemanager', 'browse', 
+                    self._svc.boss.cmd('filemanager', 'browse',
                                        new_path=filename)
                     self._svc.boss.cmd('filemanager', 'present_view')
                 else:
-                    self._svc.boss.cmd('buffer', 'open_file', 
+                    self._svc.boss.cmd('buffer', 'open_file',
                                        file_name=filename)
         except IOError:
             pass
@@ -117,7 +118,7 @@ class EmacsCallback(object):
         return False
 
 class EmacsDbusConfig(DbusConfig):
-    
+
 
     @EEXPORT(out_signature = '', in_signature = '')
     def EmacsEnter(self):
@@ -128,22 +129,22 @@ class EmacsDbusConfig(DbusConfig):
 
 class Emacs(EditorService):
     """The Emacs service.
-    This service is the Emacs editor driver. 
-    """ 
+    This service is the Emacs editor driver.
+    """
     dbus_config = EmacsDbusConfig
 
     def _create_initscript(self):
         return env.get_data_path('pida_emacs_dbus.el')
 
     def emit_editor_started(self):
-        """called when emacs started: Let notify the other services 
+        """called when emacs started: Let notify the other services
         and connect to dbus signals
         """
         self._cb = EmacsCallback(self)
         self._client = EmacsClient(self._cb, self)
         self._client.connect_signals()
         self.boss.get_service('editor').emit('started')
-        
+
     def pre_start(self):
         """Start the editor"""
         self._documents = {}
@@ -226,7 +227,7 @@ class Emacs(EditorService):
         for uid, doc in self._documents.iteritems():
             if doc.filename == filename:
                 return doc
-            
+
     def close_all(self):
         """Close all the documents"""
 
@@ -268,19 +269,19 @@ class Emacs(EditorService):
     def define_sign_type(self, name, icon, linehl, text, texthl):
         # TODO
         pass
-    
+
     def undefine_sign_type(self, name):
         # TODO
         pass
-    
+
     def show_sign(self, sign_type, filename, line):
         # TODO
         pass
-    
+
     def hide_sign(self, sign_type, filename, line):
         # TODO
         pass
-    
+
     def set_current_line(self, line_number):
         self._current_line = line_number
 

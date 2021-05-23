@@ -6,6 +6,7 @@
 import gettext
 import os
 
+
 class Locale(object):
 
     def __init__(self, modulename):

@@ -4,6 +4,7 @@ import os
 
 main = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
+
 def test_create():
     Project(main)
 
@@ -12,6 +13,7 @@ def mkfile(path):
     fp = open(path, "w")
     fp.close()
 
+
 def rmdir(top):
     for root, dirs, files in os.walk(top, topdown=False):
         for name in files:
@@ -19,6 +21,7 @@ def rmdir(top):
         for name in dirs:
             os.rmdir(os.path.join(root, name))
     os.rmdir(top)
+
 
 def make_project_files(tmpdir):
     dirs = [
@@ -54,6 +57,7 @@ def pytest_funcarg__project(request):
     Project.create_blank_project_file('test', str(tmpdir))
     return Project(str(tmpdir))
 
+
 def test_meta_dir(project, tmpdir):
     m1 = project.get_meta_dir()
     assert m1 == tmpdir.join(DATA_DIR)
@@ -61,6 +65,7 @@ def test_meta_dir(project, tmpdir):
     m2 = project.get_meta_dir('plug1')
     assert m2 == tmpdir.join(DATA_DIR, 'plug1')
     assert os.path.exists(m2)
+
 
 def test_relpath(project, tmpdir):
     check = str(tmpdir.join('something', 'else.py'))
@@ -94,7 +99,7 @@ def test_cache(project, tmpdir):
     tmpdir.ensure("outside", dir=True)
     project.indexer.index("src", recrusive=True)
 
-    print sorted(c['dirs'])
+    print(sorted(c['dirs']))
     assert sorted(c['dirnames']) == ['', '.pida-metadata', 'lib', 'src', 'test']
     assert sorted(c['dirs']) == ['', '.pida-metadata', 'lib', 'src', 'src/test']
 
@@ -146,7 +151,7 @@ def test_cache(project, tmpdir):
         'LICENSE',
         '.hiddenfile',
         ]
-    print sorted(c['dirs'])
+    print(sorted(c['dirs']))
     assert set(files).issubset(c['files'])
     assert set(dirs).issubset(c['dirs'])
 
@@ -183,6 +188,7 @@ def test_query(project, tmpdir):
     make_project_files(tmpdir)
 
     project.indexer.index(recrusive=True)
+
     def query(*k, **kw):
         return [x.relpath for x in project.indexer.query_basename(*k, **kw)]
 
@@ -242,7 +248,7 @@ def test_query(project, tmpdir):
             return Result(accept=True)
 
     bases = [x.relpath for x in project.indexer.query(find_subdir)]
-    print bases
+    print(bases)
 
     assert bases == ['', '.SVN', '.pida-metadata', 'src', 'src/.SVN',
                      'src/CVS', 'src/test2']
@@ -253,10 +259,21 @@ def test_query(project, tmpdir):
         return Result(accept=True)
 
     bases = [x.relpath for x in project.indexer.query(testc)]
-    assert bases == ['', '.SVN', '.hiddenfile', '.pida-metadata',
-                    '.pida-metadata/project.json', 'LICENSE', 'lib',
-                    'src', 'src/.SVN', 'src/CVS', 'src/Makefile',
-                    'src/skript.sh', 'src/source.c', 'src/source2.c',
-                    'src/source2.h', 'src/test2',
-                    ]
-
+    assert bases == [
+        '',
+        '.SVN',
+        '.hiddenfile',
+        '.pida-metadata',
+        '.pida-metadata/project.json',
+        'LICENSE',
+        'lib',
+        'src',
+        'src/.SVN',
+        'src/CVS',
+        'src/Makefile',
+        'src/skript.sh',
+        'src/source.c',
+        'src/source2.c',
+        'src/source2.h',
+        'src/test2',
+    ]

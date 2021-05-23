@@ -21,12 +21,13 @@ from pida.core import environment
 locale = Locale('pida')
 _ = locale.gettext
 
+
 def die_cli(message, exception=None):
     """Die in a command line way."""
-    print message
+    print(message)
     if exception:
-        print exception
-    print _('Exiting. (this is fatal)')
+        print(exception)
+    print(_('Exiting. (this is fatal)'))
     sys.exit(1)
 
 
@@ -37,7 +38,7 @@ try:
     if gtk.pygtk_version < (2, 8):
         die_cli(_('PIDA requires PyGTK >= 2.8. It only found %(major)s.%(minor)s')
                 % {'major': gtk.pygtk_version[:2][0], 'minor': gtk.pygtk_version[:2][1]})
-except ImportError, e:
+except ImportError as e:
     die_cli(_('PIDA requires Python GTK bindings. They were not found.'), e)
 
 
@@ -45,12 +46,13 @@ try:
     from pygtkhelpers import gthreads
     gthreads.initial_setup()
     from pygtkhelpers.ui.dialogs import error
+
     def die_gui(message, exception=None):
         """Die in a GUI way."""
         error(_('Fatal error, cannot start PIDA'),
               long='%s\n%s' % (message, exception))
         die_cli(message)
-except ImportError, e:
+except ImportError as e:
     die_cli(_('pygtkhelpers needs to be installed to run PIDA'), e)
 
 
@@ -68,7 +70,7 @@ if os.getuid() == 0:
 # also we have to import pdbus here so it gets initialized very early
 try:
     import pida.core.pdbus
-except ImportError, e:
+except ImportError as e:
     die_gui(_('The pida package could not be found.'), e)
 
 
@@ -78,33 +80,37 @@ def run_pida():
 
     # handle start params
     try:
-        #XXX: this sucks, needs propper errors
-        b.start() # might raise runtime error
+        # XXX: this sucks, needs propper errors
+        # might raise runtime error
+        b.start()
         if environment.opts.files:
             from pygtkhelpers.gthreads import gcall
             gcall(b.cmd, 'buffer', 'open_files', files=environment.opts.files)
         b.loop_ui()
         return 0
-    except Exception, e:
+    except Exception as e:
         traceback.print_exc()
         die_gui("Pida has failed to start",  traceback.format_exc())
         return 1
 
+
 def set_trace():
     import linecache
+
     def traceit(frame, event, arg):
         ss = frame.f_code.co_stacksize
         fn = frame.f_code.co_filename
         ln = frame.f_lineno
         co = linecache.getline(fn, ln).strip()
-        print '%s %s:%s %s' % (ss * '>', fn, ln, co)
+        print('%s %s:%s %s' % (ss * '>', fn, ln, co))
         for k, i in frame.f_locals.items():
             try:
-                print '%s=%s' % (k, i)
+                print('%s=%s' % (k, i))
             except:
-                print k, 'unable to print value'
-        print
+                print(k, 'unable to print value')
+        print()
     sys.settrace(traceit)
+
 
 def main():
     global opts
@@ -123,7 +129,7 @@ def main():
 
     # open workspace manager is asked for
     from pida.core.options import must_open_workspace_manager
-    # we need a new optionsmanager so the default manager does not workspace
+    # we need a new options manager so the default manager does not workspace
     # lookup yet
 
     def do_workspace_manager():
@@ -165,11 +171,11 @@ def main():
         from pida.ui.workspace import WorkspaceWindow
         sw = WorkspaceWindow(command=command)
         sw.widget.show()
-        #this mainloop will exit when the workspacewindow is closes
+        # this mainloop will exit when the workspacewindow is closes
         gtk.main()
 
     if opts.version:
-        print _('PIDA, version %s') % pida.version
+        print(_('PIDA, version %s') % pida.version)
         exit(0)
 
     if (must_open_workspace_manager() and not environment.workspace_set()) or \
@@ -181,7 +187,7 @@ def main():
                         'Not all functions available.', Warning, 'pida', '')
 
     if opts.profile_path:
-        print "---- Running in profile mode ----"
+        print("---- Running in profile mode ----")
         import cProfile
         try:
             cProfile.runctx('run_pida()', globals(), locals(), opts.profile_path)
@@ -190,7 +196,7 @@ def main():
             pass
         #signal.signal(signal.SIGALRM, force_quit)
         #signal.alarm(3)
-        print "---- Top 100 statistic ----"
+        print("---- Top 100 statistic ----")
         import pstats
         p = pstats.Stats(opts.profile_path)
         p.strip_dirs().sort_stats('time', 'cum').print_stats(100)

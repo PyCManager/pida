@@ -14,9 +14,10 @@ from pida.core.locale import Locale
 locale = Locale('pida')
 _ = locale.gettext
 
-class SplashScreen(gtk.Window): 
 
-    def __init__(self): 
+class SplashScreen(gtk.Window):
+
+    def __init__(self):
         gtk.Window.__init__(self)
         self.set_decorated(False)
         vb = gtk.VBox()

@@ -19,11 +19,13 @@ CONTEXT_TYPES = [
     'url-menu',
 ]
 
+
 class ContextFeaturesConfig(FeaturesConfig):
 
     def create(self):
         for context in CONTEXT_TYPES:
             self.publish(context)
+
 
 class ContextCommandsConfig(CommandsConfig):
 
@@ -49,12 +51,13 @@ class ContextCommandsConfig(CommandsConfig):
         self.svc.emit('show-menu', menu=menu, context=context, **kw)
         menu.popup(None, None, None, button, time)
 
+
 class ContextEventsConfig(EventsConfig):
 
     def create(self):
         self.publish('show-menu')
         self.publish('menu-deactivated')
-    
+
     def subscribe_all_foreign(self):
         self.subscribe_foreign('plugins', 'plugin_started',
             self.plugins_changed)
@@ -67,7 +70,7 @@ class ContextEventsConfig(EventsConfig):
 
 # Service class
 class Contexts(Service):
-    """Describe your Service Here""" 
+    """Describe your Service Here"""
 
     features_config = ContextFeaturesConfig
     commands_config = ContextCommandsConfig

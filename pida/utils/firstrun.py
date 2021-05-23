@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 """
     The dialog thats shown on the first run
 
@@ -13,6 +13,7 @@ pida_icon = gtk.Image()
 pida_icon.set_from_file(os.path.join(
     pida.__path__[0],
     'resources/pixmaps/pida-icon.png'))
+
 
 class FirstTimeWindow(object):
 
@@ -69,7 +70,7 @@ class FirstTimeWindow(object):
         return (success, editor_name)
 
     def cb_sanity(self, button, component, radio, label):
-        errs =  component.get_sanity_errors()
+        errs = component.get_sanity_errors()
 
         if errs:
             radio.set_sensitive(False)
@@ -95,11 +96,12 @@ class FirstTimeWindow(object):
         f. write('#Remove this to rerun the start wizard\n\n')
         f.close()
 
+
 if __name__ == '__main__':
     from pida.editors.vim.vim import Vim
     from pida.editors.mooedit.mooedit import Mooedit
     ftw = FirstTimeWindow([Vim, Mooedit])
-    print ftw.run('~/firstrun')
+    print(ftw.run('~/firstrun'))
 
 
 

@@ -106,7 +106,7 @@ static GObject *moo_paned_constructor       (GType                  type,
                                              guint                  n_construct_properties,
                                              GObjectConstructParam *construct_properties);
 
-static void     moo_paned_destroy           (GtkObject      *object);
+static void     moo_paned_destroy           (AtkObject      *object);
 
 static void     moo_paned_realize           (GtkWidget      *widget);
 static void     moo_paned_unrealize         (GtkWidget      *widget);
@@ -223,7 +223,7 @@ static void
 moo_paned_class_init (MooInternalPanedClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    GtkObjectClass *gtkobject_class = GTK_OBJECT_CLASS (klass);
+    AtkObjectClass *atkobject_class = ATK_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
     GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
 
@@ -233,7 +233,7 @@ moo_paned_class_init (MooInternalPanedClass *klass)
     gobject_class->get_property = moo_paned_get_property;
     gobject_class->constructor = moo_paned_constructor;
 
-    gtkobject_class->destroy = moo_paned_destroy;
+    atkobject_class->destroy = moo_paned_destroy;
 
     widget_class->realize = moo_paned_realize;
     widget_class->unrealize = moo_paned_unrealize;
@@ -356,9 +356,9 @@ moo_paned_class_init (MooInternalPanedClass *klass)
 static void
 moo_paned_init (MooInternalPaned *paned)
 {
-    GTK_WIDGET_SET_FLAGS (paned, GTK_NO_WINDOW);
+    gtk_widget_set_can_default (paned, FALSE);
 
-    paned->priv = G_TYPE_INSTANCE_GET_PRIVATE (paned,
+    paned->priv = G_PARAM_PRIVATE (paned,
                                                MOO_TYPE_INTERNAL_PANED,
                                                MooInternalPanedPrivate);
 
@@ -410,11 +410,11 @@ moo_paned_constructor (GType                  type,
     {
         case MOO_INTERNAL_PANE_POS_LEFT:
         case MOO_INTERNAL_PANE_POS_RIGHT:
-            paned->button_box = gtk_vbox_new (FALSE, button_spacing);
+            paned->button_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, button_spacing);
             break;
         case MOO_INTERNAL_PANE_POS_TOP:
         case MOO_INTERNAL_PANE_POS_BOTTOM:
-            paned->button_box = gtk_hbox_new (FALSE, button_spacing);
+            paned->button_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, button_spacing);
             break;
         default:
             g_warning ("%s: invalid 'pane-position' property value '%u',"
@@ -547,7 +547,7 @@ moo_paned_get_property (GObject        *object,
 
 
 static void
-moo_paned_destroy (GtkObject      *object)
+moo_paned_destroy (AtkObject      *object)
 {
     GSList *l;
     MooInternalPaned *paned = MOO_INTERNAL_PANED (object);
@@ -555,7 +555,7 @@ moo_paned_destroy (GtkObject      *object)
     for (l = paned->priv->panes; l != NULL; l = l->next)
         gtk_object_destroy (l->data);
 
-    GTK_OBJECT_CLASS(moo_paned_parent_class)->destroy (object);
+    ATK_OBJECT_CLASS(moo_paned_parent_class)->destroy (object);
 
     for (l = paned->priv->panes; l != NULL; l = l->next)
         g_object_unref (l->data);
@@ -638,7 +638,7 @@ moo_paned_realize (GtkWidget *widget)
     widget->style = gtk_style_attach (widget->style, widget->window);
     gtk_style_set_background (widget->style, paned->priv->bin_window, GTK_STATE_NORMAL);
 
-    GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+    gtk_widget_set_can_default (widget, GTK_REALIZED);
 
     realize_pane (paned);
 

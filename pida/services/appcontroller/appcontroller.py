@@ -35,6 +35,7 @@ class AppcontrollerConfig(OptionsConfig):
             _('Always open the workspace manager when no workspace name is given'),
         )
 
+
 class AppcontrollerActions(ActionsConfig):
 
     dbus_no_activate = ('quit_pida',)
@@ -54,7 +55,6 @@ class AppcontrollerActions(ActionsConfig):
         self.svc.boss.stop()
 
 class ApplicationDbus(DbusConfig):
-
 
     @LEXPORT(in_signature='s', out_signature='s')
     def cmd(self, json_dump):
@@ -97,7 +97,7 @@ class ApplicationDbus(DbusConfig):
 
 # Service class
 class Appcontroller(Service):
-    """Main Application controller""" 
+    """Main Application controller"""
 
     actions_config = AppcontrollerActions
     options_config = AppcontrollerConfig

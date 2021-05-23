@@ -101,9 +101,9 @@ class DbusOptionsManagerReal(Object):
             return
         try:
             opt = self.get_option(str(name))
-        except KeyError, e:
+        except KeyError as e:
             return
-        from .options import ExtraOptionItem
+
         if (opt.workspace and workspace_name() == workspace) or \
            not opt.workspace:
 
@@ -114,7 +114,7 @@ class DbusOptionsManagerReal(Object):
             return
         try:
             opt = self.get_extra_option(str(name))
-        except KeyError, e:
+        except KeyError as e:
             return
         if (opt.workspace and workspace_name() == workspace) or \
            not opt.workspace:
@@ -159,15 +159,15 @@ class DbusOptionsManagerReal(Object):
             from pida.core.options import BaseChoice, Color
             if issubclass(type_, (BaseChoice, Color)):
                 return 's'
-            raise ValueError, "No object type found for %s" % type_
+            raise ValueError("No object type found for %s" % type_)
 
     def dbus_custom_introspect(self):
         rv = '  <interface name="%s">\n' % (self.dbus_ns)
         for option in self._options.itervalues():
             try:
                 typ = self.object_to_dbus(option.type)
-            except ValueError, e:
-                print "Can't find conversation dbus conversation for ", option
+            except ValueError as e:
+                print("Can't find conversation dbus conversation for ", option)
                 continue
             rv += '    <property name="%s" type="%s" access="readwrite"/>\n' % (option.name, typ)
 
@@ -223,7 +223,7 @@ class DbusOptionsManagerReal(Object):
                                          message,
                                          method_name,
                                          Signature(''))
-                except Exception, exception:
+                except Exception as exception:
                     _method_reply_error(connection, message, exception)
                 return
             elif method_name == 'CONFIG_CHANGED' or \

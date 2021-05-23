@@ -7,9 +7,11 @@ from __future__ import absolute_import
 import json
 import py
 
+
 def dump(data, path, indent=2, sort_keys=True, **kw):
     with path.open('w') as fp:
         json.dump(data, fp, indent=indent, sort_keys=sort_keys, **kw)
+
 
 def load(path, fallback=None):
     try:

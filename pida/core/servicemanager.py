@@ -25,8 +25,10 @@ _ = locale.gettext
 class ServiceLoadingError(ImportError):
     """An error loading a service"""
 
+
 class ServiceModuleError(ServiceLoadingError):
     """No Service class in service module"""
+
 
 class ServiceDependencyError(ServiceLoadingError):
     """Service does not have the necessary dependencies to start"""
@@ -51,13 +53,12 @@ class ServiceLoader(object):
             if name.startswith(del_name):
                 del sys.modules[name]
 
-
     def get_all(self):
         classes = []
         for name in self._find_all():
             try:
                 classes.append(self.get_one(name))
-            except ImportError, e:
+            except ImportError as e:
                 log.exception(e)
         classes.sort(key=Service.sort_key)
         return classes
@@ -66,9 +67,9 @@ class ServiceLoader(object):
         module = '.'.join([self._name, name, name])
         try:
             module = __import__(module, fromlist=['*'], level=0)
-        except ImportError, e:
+        except ImportError as e:
             log.exception(e)
-            raise ServiceModuleError(module), None, None
+            raise (ServiceModuleError(module), None, None)
         self._register_service_env(module)
 
         try:
@@ -76,10 +77,8 @@ class ServiceLoader(object):
             service.__path__ = os.path.dirname(module.__file__) #XXX: hack
             service.__loader__ = self
             return service
-        except AttributeError, e:
-
-            raise ServiceModuleError(module.__name__), None, None
-
+        except AttributeError as e:
+            raise (ServiceModuleError(module.__name__), None, None)
 
     def get_all_service_files(self):
         for base in self._path:
@@ -150,16 +149,16 @@ class ServiceManager(object):
             log.error('Unable to load plugin {name}', name=name)
             return
 
-        #XXX: test this more roughly
+        # XXX: test this more roughly
         plugin = plugin_class(self._boss)
         try:
             if hasattr(plugin, 'started'):
-                log.warning("plugin.started shouldn't be set by {plugin!r}", 
+                log.warning("plugin.started shouldn't be set by {plugin!r}",
                             plugin=plugin)
 
             plugin.started = False # not yet started
 
-            #XXX: unregister?
+            # XXX: unregister?
             pixmaps_dir = os.path.join(plugin.__path__, 'pixmaps')
             if os.path.exists(pixmaps_dir):
                 self._boss._icons.register_file_icons_for_directory(pixmaps_dir)
@@ -168,10 +167,10 @@ class ServiceManager(object):
                 try:
                     plugin.create_all()
 
-                    #stop_components will handle
+                    # stop_components will handle
                     plugin.subscribe_all()
 
-                    #XXX: what to do with unrolling those
+                    # XXX: what to do with unrolling those
                     plugin.pre_start()
                     plugin.start()
                     assert plugin.started is False # this shouldn't change
@@ -192,7 +191,6 @@ class ServiceManager(object):
             self._plugins.unload(name)
             raise ServiceLoadingError(name)
 
-
     def stop_plugin(self, name):
         plugin = self.get_service(name)
         # Check plugin is a plugin not a service
@@ -212,7 +210,7 @@ class ServiceManager(object):
         pp = 20.0 / len(classes)
         for i, service in enumerate(classes):
             service_instance = service(self._boss)
-            #XXX: check for started
+            # XXX: check for started
             service.started = False
             self._register(service_instance)
             self.update_progress((i + 1) * pp, _("Register Components"))
@@ -246,7 +244,7 @@ class ServiceManager(object):
         for i, svc in enumerate(self.get_services()):
             svc.log.debug('Starting Service')
             svc.start()
-            #XXX: check if its acceptable here
+            # XXX: check if its acceptable here
             svc.started = True
             self.update_progress(60 + (i + 1) * pp, _("Start Components"))
         self.started = True

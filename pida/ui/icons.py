@@ -49,7 +49,7 @@ class IconRegister(object):
         except:
             #XXX: there is a image loader missing
             #     for *.svg its librsvg + its gtk pixmap loader
-            print filename
+            print(filename)
         # this is broken for some reason
         #gtk.icon_theme_add_builtin_icon(name, gtk.ICON_SIZE_SMALL_TOOLBAR, pb)
 
@@ -62,7 +62,41 @@ class IconRegister(object):
 
 
 
+"""
+I'm trying to create icons in python and GTK3 for AppIndicator3 , which is using stock items.
+When using existing stock icons (like indicator-messages everything is fine.
+But when I create my own stock icon it is not displayed (I used both svg and png image). What can be wrong?
 
+I have this code to add icon factory:
+
+from gi.repository import Gtk
+from gi.repository import AppIndicator3 as appindicator
+import os
+
+_curr_dir=os.path.split(__file__)[0]
+
+if __name__ == "__main__":
+
+    icon_factory=Gtk.IconFactory()
+    icon_source=Gtk.IconSource()
+    f=os.path.join(_curr_dir, 'pics', 'test.svg')
+    if not os.path.exists(f):
+        raise Exception('Image %s missing'%f)
+    icon_source.set_filename(f)
+    icon_source.set_size_wildcarded(True)
+    icon_set=Gtk.IconSet()
+    icon_set.add_source(icon_source)
+    icon_factory.add('myapp-icon', icon_set)
+    icon_factory.add_default()
+
+    ind = appindicator.Indicator.new (
+                          "example-simple-client",
+                          "myapp-icon",
+                          appindicator.IndicatorCategory.APPLICATION_STATUS)
+    ind.set_status (appindicator.IndicatorStatus.ACTIVE)
+    ind.set_attention_icon ("indicator-messages-new")
+    ind.set_label("test", "test")
+"""
 
 #w = gtk.Window()
 #i = gtk.Image()
